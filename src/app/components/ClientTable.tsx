@@ -1,8 +1,7 @@
-
 "use client";
 
-import { useEffect, useState } from "react";
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 
 interface Advocate {
   firstName: string;
@@ -13,111 +12,125 @@ interface Advocate {
   phoneNumber: string;
   yearsOfExperience: string;
 }
+
 interface ClientTableProps {
-    initialData: Advocate[];
-  }
-  
+  initialData: Advocate[];
+}
+
+const AdvocateRow = memo(({ advocate, index, height, start }: { 
+    advocate: Advocate; 
+    index: number;
+    height: number;
+    start: number;
+  }) => (
+    <div
+      className="absolute top-0 left-0 w-full border-t border-gray-200 bg-white flex"
+      style={{
+        height: `${height}px`,
+        transform: `translateY(${start}px)`,
+      }}
+    >
+      <div className="p-4 w-32 flex-shrink-0">{advocate.firstName}</div>
+      <div className="p-4 w-32 flex-shrink-0">{advocate.lastName}</div>
+      <div className="p-4 w-32 flex-shrink-0">{advocate.city}</div>
+      <div className="p-4 w-24 flex-shrink-0">{advocate.degree}</div>
+      <div className="p-4 w-96 flex-shrink-0">
+        {advocate.specialties.map((specialty, j) => (
+          <div key={j} className="py-1">{specialty}</div>
+        ))}
+      </div>
+      <div className="p-4 w-32 flex-shrink-0">{advocate.yearsOfExperience}</div>
+      <div className="p-4 w-32 flex-shrink-0">{advocate.phoneNumber}</div>
+    </div>
+  ));
+AdvocateRow.displayName = 'AdvocateRow';
+
 export default function ClientTable({ initialData }: ClientTableProps) {
   const [advocates, setAdvocates] = useState<Advocate[]>(initialData);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const parentRef = useRef<HTMLDivElement>(null);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm: string = e.target.value;
-
-    const element = document.getElementById("search-term");
-    if (element) {
-      element.innerHTML = searchTerm;
-    }
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
+  const filteredAdvocates = useMemo(() => {
+    if (!searchTerm) return advocates;
+    
+    return advocates.filter((advocate) => {
       return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
+        advocate.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        advocate.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        advocate.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        advocate.degree.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        advocate.specialties.some(s => 
+          s.toLowerCase().includes(searchTerm.toLowerCase())
+        ) ||
         advocate.yearsOfExperience.toString().includes(searchTerm) ||
         advocate.phoneNumber.toString().includes(searchTerm)
       );
     });
+  }, [advocates, searchTerm]);
 
-    setFilteredAdvocates(filteredAdvocates);
-  };
+  const rowVirtualizer = useVirtualizer({
+    count: filteredAdvocates.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: useCallback(() => 200, []),
+    overscan: 5,
+  });
 
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
-  };
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setSearchTerm("");
+  }, []);
 
   return (
-    <>
-    <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Solace Advocates</h1>
+      
+      <div className="mb-6">
+        <p className="mb-2">
         </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
+        <div className="flex gap-2">
+          <input
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search advocates..."
+          />
+          <button 
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+          >
+            Reset Search
+          </button>
+        </div>
       </div>
-      <br />
-      <br />
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Degree</th>
-            <th>Specialties</th>
-            <th>Years of Experience</th>
-            <th>Phone Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {(filteredAdvocates.length > 0 ? 
-              filteredAdvocates.map((advocate, i) => {
-                return (
-                  <tr key={i}>
-                    <td>{advocate.firstName}</td>
-                    <td>{advocate.lastName}</td>
-                    <td>{advocate.city}</td>
-                    <td>{advocate.degree}</td>
-                    <td>
-                      {advocate.specialties.map((s, j) => (
-                        <div key={j}>{s}</div>
-                      ))}
-                    </td>
-                    <td>{advocate.yearsOfExperience}</td>
-                    <td>{advocate.phoneNumber}</td>
-                  </tr>
-                );
-              }) 
-              : 
-              advocates.map((advocate, i) => {
-                return (
-                  <tr key={i}>
-                    <td>{advocate.firstName}</td>
-                    <td>{advocate.lastName}</td>
-                    <td>{advocate.city}</td>
-                    <td>{advocate.degree}</td>
-                    <td>
-                      {advocate.specialties.map((s, j) => (
-                        <div key={j}>{s}</div>
-                      ))}
-                    </td>
-                    <td>{advocate.yearsOfExperience}</td>
-                    <td>{advocate.phoneNumber}</td>
-                  </tr>
-                );
-            }))}
-        </tbody>
-      </table>
-    </main>
-    </>
+
+      <div ref={parentRef} className="h-[600px] overflow-auto relative border border-gray-200 rounded-lg">
+        <div className="sticky top-0 bg-gray-50 shadow-sm z-10 flex">
+          <div className="p-4 text-left bg-gray-50 font-medium w-32 flex-shrink-0">First Name</div>
+          <div className="p-4 text-left bg-gray-50 font-medium w-32 flex-shrink-0">Last Name</div>
+          <div className="p-4 text-left bg-gray-50 font-medium w-32 flex-shrink-0">City</div>
+          <div className="p-4 text-left bg-gray-50 font-medium w-24 flex-shrink-0">Degree</div>
+          <div className="p-4 text-left bg-gray-50 font-medium w-96 flex-shrink-0">Specialties</div>
+          <div className="p-4 text-left bg-gray-50 font-medium w-32 flex-shrink-0">Years of Experience</div>
+          <div className="p-4 text-left bg-gray-50 font-medium w-32 flex-shrink-0">Phone Number</div>
+        </div>
+        
+        <div className="relative">
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+            <AdvocateRow
+              key={virtualRow.key}
+              advocate={filteredAdvocates[virtualRow.index]}
+              index={virtualRow.index}
+              height={virtualRow.size}
+              start={virtualRow.start}
+            />
+          ))}
+          <div style={{ height: `${rowVirtualizer.getTotalSize()}px` }} />
+        </div>
+      </div>
+    </div>
   );
 }
