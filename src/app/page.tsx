@@ -21,7 +21,6 @@ export default function Home() {
     fetch("/api/advocates").then((response) => {
       response.json().then((jsonResponse) => {
         setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
       });
     });
   }, []);
@@ -42,7 +41,8 @@ export default function Home() {
         advocate.city.includes(searchTerm) ||
         advocate.degree.includes(searchTerm) ||
         advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
+        advocate.yearsOfExperience.toString().includes(searchTerm) ||
+        advocate.phoneNumber.toString().includes(searchTerm)
       );
     });
 
@@ -72,32 +72,53 @@ export default function Home() {
       <br />
       <table>
         <thead>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>City</th>
-          <th>Degree</th>
-          <th>Specialties</th>
-          <th>Years of Experience</th>
-          <th>Phone Number</th>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>City</th>
+            <th>Degree</th>
+            <th>Specialties</th>
+            <th>Years of Experience</th>
+            <th>Phone Number</th>
+          </tr>
         </thead>
         <tbody>
-          {filteredAdvocates.map((advocate, i) => {
-            return (
-              <tr key={i}>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s, j) => (
-                    <div key={j}>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
+          {(filteredAdvocates.length > 0 ? 
+              filteredAdvocates.map((advocate, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{advocate.firstName}</td>
+                    <td>{advocate.lastName}</td>
+                    <td>{advocate.city}</td>
+                    <td>{advocate.degree}</td>
+                    <td>
+                      {advocate.specialties.map((s, j) => (
+                        <div key={j}>{s}</div>
+                      ))}
+                    </td>
+                    <td>{advocate.yearsOfExperience}</td>
+                    <td>{advocate.phoneNumber}</td>
+                  </tr>
+                );
+              }) 
+              : 
+              advocates.map((advocate, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{advocate.firstName}</td>
+                    <td>{advocate.lastName}</td>
+                    <td>{advocate.city}</td>
+                    <td>{advocate.degree}</td>
+                    <td>
+                      {advocate.specialties.map((s, j) => (
+                        <div key={j}>{s}</div>
+                      ))}
+                    </td>
+                    <td>{advocate.yearsOfExperience}</td>
+                    <td>{advocate.phoneNumber}</td>
+                  </tr>
+                );
+            }))}
         </tbody>
       </table>
     </main>
