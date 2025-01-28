@@ -1,10 +1,11 @@
-## Advocates
+# Advocates
 
-See DOCUMENTATION.MD for further discussion on draft features
+See ![DOCUMENTATION.MD](https://github.com/0xevm1/advocates/blob/main/DOCUMENTATION.md) for further discussion on implemented and features
 
-====
+See the ![Pull Requests](https://github.com/0xevm1/advocates/pulls?q=is%3Apr) for chain of thought and development
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![Screenshot of Advocates Site](https://github.com/0xevm1/advocates/blob/main/advocates.png)
+
 
 ## Getting Started
 
