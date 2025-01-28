@@ -16,10 +16,13 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value;
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm: string = e.target.value;
 
-    document.getElementById("search-term").innerHTML = searchTerm;
+    const element = document.getElementById("search-term");
+    if (element) {
+      element.innerHTML = searchTerm;
+    }
 
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate) => {
@@ -42,6 +45,7 @@ export default function Home() {
   };
 
   return (
+    <>
     <main style={{ margin: "24px" }}>
       <h1>Solace Advocates</h1>
       <br />
@@ -67,16 +71,16 @@ export default function Home() {
           <th>Phone Number</th>
         </thead>
         <tbody>
-          {filteredAdvocates.map((advocate) => {
+          {filteredAdvocates.map((advocate, i) => {
             return (
-              <tr>
+              <tr key={advocate+i}>
                 <td>{advocate.firstName}</td>
                 <td>{advocate.lastName}</td>
                 <td>{advocate.city}</td>
                 <td>{advocate.degree}</td>
                 <td>
-                  {advocate.specialties.map((s) => (
-                    <div>{s}</div>
+                  {advocate.specialties.map((s, j) => (
+                    <div key={advocate+j}>{s}</div>
                   ))}
                 </td>
                 <td>{advocate.yearsOfExperience}</td>
@@ -87,5 +91,6 @@ export default function Home() {
         </tbody>
       </table>
     </main>
+    </>
   );
 }
