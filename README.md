@@ -1,8 +1,8 @@
 # Advocates
 
-See ![DOCUMENTATION.MD](https://github.com/0xevm1/advocates/blob/main/DOCUMENTATION.md) for further discussion on implemented and features
+See [DOCUMENTATION.MD](https://github.com/0xevm1/advocates/blob/main/DOCUMENTATION.md) for further discussion on implemented and features
 
-See the ![Pull Requests](https://github.com/0xevm1/advocates/pulls?q=is%3Apr) for chain of thought and development
+See the [Pull Requests](https://github.com/0xevm1/advocates/pulls?q=is%3Apr) for chain of thought and development
 
 ![Screenshot of Advocates Site](https://github.com/0xevm1/advocates/blob/main/advocates.png)
 
