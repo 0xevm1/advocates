@@ -2,9 +2,19 @@
 
 import { useEffect, useState } from "react";
 
+interface Advocate {
+  firstName: string;
+  lastName: string;
+  city: string;
+  degree: string;
+  specialties: string[];
+  phoneNumber: string;
+  yearsOfExperience: string;
+}
+
 export default function Home() {
-  const [advocates, setAdvocates] = useState([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const [advocates, setAdvocates] = useState<Advocate[]>([]);
+  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -73,14 +83,14 @@ export default function Home() {
         <tbody>
           {filteredAdvocates.map((advocate, i) => {
             return (
-              <tr key={advocate+i}>
+              <tr key={i}>
                 <td>{advocate.firstName}</td>
                 <td>{advocate.lastName}</td>
                 <td>{advocate.city}</td>
                 <td>{advocate.degree}</td>
                 <td>
                   {advocate.specialties.map((s, j) => (
-                    <div key={advocate+j}>{s}</div>
+                    <div key={j}>{s}</div>
                   ))}
                 </td>
                 <td>{advocate.yearsOfExperience}</td>
