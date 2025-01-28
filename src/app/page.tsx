@@ -17,5 +17,5 @@ async function getAdvocates() {
 export default async function Home() {
   const initialData = await getAdvocates();
   
-  return <ClientTable initialData={initialData} />;
+  return <ClientTable initialData={initialData.data} />;
 }

@@ -18,17 +18,8 @@ interface ClientTableProps {
   }
   
 export default function ClientTable({ initialData }: ClientTableProps) {
-  const [advocates, setAdvocates] = useState<Advocate[]>([]);
+  const [advocates, setAdvocates] = useState<Advocate[]>(initialData);
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
-
-  useEffect(() => {
-    console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-      });
-    });
-  }, []);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm: string = e.target.value;
