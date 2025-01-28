@@ -38,7 +38,7 @@ export default function ClientTable({ initialData }: ClientTableProps) {
         advocate.degree.includes(searchTerm) ||
         advocate.specialties.includes(searchTerm) ||
         advocate.yearsOfExperience.toString().includes(searchTerm) ||
-        advocate.phoneNumber.toString().includes
+        advocate.phoneNumber.toString().includes(searchTerm)
       );
     });
 
